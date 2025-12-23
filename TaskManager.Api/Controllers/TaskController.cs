@@ -28,5 +28,21 @@ namespace TaskManager.Api.Controllers
                 .ToListAsync();
             return Ok(tasks);
         }
+
+        [Authorize]
+        [HttpGet("My")]
+        public async Task<ActionResult<List<TaskItem>>> GetMyTasks()
+        {
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            int parsedUserId = int.Parse(userId);
+            var myTasks = await _dbContext.TaskItems
+                .Where(t => t.UserId == parsedUserId)
+                .ToListAsync();
+            return Ok(myTasks);
+        }
     }
 }
