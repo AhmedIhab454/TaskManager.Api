@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc; // ControllerBase
 using Microsoft.EntityFrameworkCore; // EF Core
 using System.Security.Claims; // Read user claims
 using TaskManager.Api.Data; // DbContext
+using TaskManager.Api.DTOs;
 using TaskManager.Api.Models; // TaskItem model
 namespace TaskManager.Api.Controllers
 {
@@ -44,5 +45,27 @@ namespace TaskManager.Api.Controllers
                 .ToListAsync();
             return Ok(myTasks);
         }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<ActionResult<TaskItem>> CreateTask([FromBody] CreateTaskDto createTaskDto)
+        {
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            int parsedUserId = int.Parse(userId);
+            var newTask = new TaskItem
+            {
+                Title = createTaskDto.Title,
+                IsCompleted = false,
+                UserId = parsedUserId
+            };
+            _dbContext.TaskItems.Add(newTask);
+            await _dbContext.SaveChangesAsync();
+            return Ok(newTask);
+        }
+
     }
 }
