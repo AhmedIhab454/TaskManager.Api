@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using TaskManager.Api.Data;
+using TaskManager.Api.Middleware;
 namespace TaskManager.Api
 
 {
@@ -83,7 +84,7 @@ namespace TaskManager.Api
                 app.UseSwaggerUI();
             }
 
-
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
