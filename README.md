@@ -1,25 +1,25 @@
-ï»¿# Task Manager API
+# Task Manager API
 
 A secure REST API for managing personal tasks, built with ASP.NET Core and Entity Framework Core.
 
-Users can register, log in, and manage their own tasks. Each task is private to the user who created it â€” no user can view or modify another user's data.
+Users can register, log in, and manage their own tasks. Each task is private to the user who created it — no user can view or modify another user's data.
 
 ## Tech Stack
 
-- **ASP.NET Core 8** â€” Web API framework
-- **Entity Framework Core** â€” Database ORM
-- **SQL Server** â€” Database
-- **JWT Bearer Authentication** â€” Secure authentication
-- **Swagger / OpenAPI** â€” API documentation and testing
+- **ASP.NET Core 8** — Web API framework
+- **Entity Framework Core** — Database ORM
+- **SQL Server** — Database
+- **JWT Bearer Authentication** — Secure authentication
+- **Swagger / OpenAPI** — API documentation and testing
 
 ## Features
 
 - User registration and login with hashed passwords
 - JWT token-based authentication
 - Full CRUD operations for tasks (Create, Read, Update, Delete)
-- User-scoped data â€” users only see their own tasks
-- DTO pattern â€” database entities are never exposed directly
-- Global error handling â€” all errors return clean, consistent responses
+- User-scoped data — users only see their own tasks
+- DTO pattern — database entities are never exposed directly
+- Global error handling — all errors return clean, consistent responses
 - Input validation on all request bodies
 
 ## Getting Started
@@ -90,9 +90,9 @@ This API uses JWT Bearer authentication. To access protected endpoints:
 
 ## Security Notes
 
-- Passwords are hashed using SHA256 before storage â€” plain text passwords are never saved
+- Passwords are hashed using SHA256 before storage — plain text passwords are never saved
 - JWT tokens expire after 60 minutes
-- All task endpoints verify ownership â€” users can only access their own tasks
+- All task endpoints verify ownership — users can only access their own tasks
 - Sensitive configuration values are stored outside of source control
 ```
 
