@@ -4,9 +4,11 @@ namespace TaskManager.Api.DTOs
     public class RegisterDto
     {
         [Required]
-        public string UsreName { get; set; }
+        public string Usrename { get; set; } = null!;
 
         [Required]
-        public string Password { get; set; }
+        [MinLength(6, ErrorMessage = "Password must be at least 6 characters.")]
+
+        public string Password { get; set; } = null!;
     }
 }

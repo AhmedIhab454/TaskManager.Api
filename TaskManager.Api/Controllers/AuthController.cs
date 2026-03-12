@@ -23,15 +23,17 @@ namespace TaskManager.Api.Controllers
 
 
         //Dependency Injection
-        public AuthController(AppDbContext appContext)
+        private readonly IConfiguration _configuration;
+        public AuthController(AppDbContext dbContext, IConfiguration configuration)
         {
-            _dbContext = appContext;
+            _dbContext = dbContext;
+            _configuration = configuration;
         }
 
-        [HttpPost("Register")]
+        [HttpPost("register")]
         public async Task<ActionResult> Register(RegisterDto registerDto)
         {
-            bool UserExists = await _dbContext.Users.AnyAsync(u => u.Username == registerDto.UsreName);
+            bool UserExists = await _dbContext.Users.AnyAsync(u => u.Username == registerDto.Usrename);
             if (UserExists)
             {
                 return BadRequest("Username already exists.");
@@ -45,7 +47,7 @@ namespace TaskManager.Api.Controllers
             //Create new user
             var user = new User
             {
-                Username = registerDto.UsreName,
+                Username = registerDto.Usrename,
                 PasswordHash = passwordHash
             };
 
@@ -61,7 +63,7 @@ namespace TaskManager.Api.Controllers
         public async Task<ActionResult> Login(LoginDto loginDto)
         {
 
-            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == loginDto.UsreName);
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == loginDto.Usrename);
             if (user == null)
             {
                 return Unauthorized("Invalid username or password.");
@@ -87,24 +89,19 @@ namespace TaskManager.Api.Controllers
 
             var key = new SymmetricSecurityKey(
                    Encoding.UTF8.GetBytes(
-                       HttpContext.RequestServices
-                           .GetRequiredService<IConfiguration>()
-                           ["JwtSettings:SecretKey"]!
+                       _configuration["JwtSettings:SecretKey"]!
                    )
                );
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
-                issuer: HttpContext.RequestServices
-                           .GetRequiredService<IConfiguration>()
+                issuer: _configuration
                            ["JwtSettings:Issuer"],
-                audience: HttpContext.RequestServices
-                           .GetRequiredService<IConfiguration>()
+                audience: _configuration
                            ["JwtSettings:Audience"],
                 claims: claims,
                        expires: DateTime.UtcNow.AddMinutes(
-            int.Parse(
-                HttpContext.RequestServices.GetRequiredService<IConfiguration>()["JwtSettings:ExpiryMinutes"]! )),
+                       int.Parse(_configuration["JwtSettings:ExpiryMinutes"]!)), 
                 signingCredentials: creds
             );
 
