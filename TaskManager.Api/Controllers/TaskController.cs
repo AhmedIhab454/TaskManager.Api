@@ -32,7 +32,7 @@ namespace TaskManager.Api.Controllers
 
         [Authorize]
         [HttpGet("My")]
-        public async Task<ActionResult<List<TaskItem>>> GetMyTasks()
+        public async Task<ActionResult<List<TaskResponseDto>>> GetMyTasks()
         {
             string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null)
@@ -42,6 +42,12 @@ namespace TaskManager.Api.Controllers
             int parsedUserId = int.Parse(userId);
             var myTasks = await _dbContext.TaskItems
                 .Where(t => t.UserId == parsedUserId)
+                .Select(t => new TaskResponseDto
+                {
+                    Id = t.Id,
+                    Title = t.Title,
+                    IsCompleted = t.IsCompleted
+                })
                 .ToListAsync();
             return Ok(myTasks);
         }
